@@ -19,9 +19,13 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 
+import profile.kevin.profile.wifi.WifiFragment;
+
+
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+        public static String LOG_PREFIX = "KEVIN_PROFILE";
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -51,23 +55,20 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+
+        if (position == 0) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, WifiFragment.newInstance())
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                    .commit();
+        }
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+    public void onSectionAttached(String title) {
+        mTitle = title;
     }
 
     public void restoreActionBar() {
@@ -115,6 +116,7 @@ public class MainActivity extends ActionBarActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static final String ARG_SECTION_TITLE = "section_title";
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -124,6 +126,7 @@ public class MainActivity extends ActionBarActivity
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString(ARG_SECTION_TITLE, String.valueOf(sectionNumber));
             fragment.setArguments(args);
             return fragment;
         }
@@ -142,7 +145,7 @@ public class MainActivity extends ActionBarActivity
         public void onAttach(Activity activity) {
             super.onAttach(activity);
             ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+                    getArguments().getString(ARG_SECTION_TITLE));
         }
     }
 
